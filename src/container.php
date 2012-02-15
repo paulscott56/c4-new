@@ -19,7 +19,7 @@ $sc->register('listener.response', 'Symfony\Component\HttpKernel\EventListener\R
     ->setArguments(array('UTF-8'))
 ;
 $sc->register('listener.exception', 'Symfony\Component\HttpKernel\EventListener\ExceptionListener')
-    ->setArguments(array('Modules\Calendar\\Controller\\ErrorController::exceptionAction'))
+    ->setArguments(array('Chisimba\\Controller\\ErrorController::exceptionAction'))
 ;
 $sc->register('dispatcher', 'Symfony\Component\EventDispatcher\EventDispatcher')
     ->addMethodCall('addSubscriber', array(new Reference('listener.router')))
@@ -27,7 +27,7 @@ $sc->register('dispatcher', 'Symfony\Component\EventDispatcher\EventDispatcher')
     ->addMethodCall('addSubscriber', array(new Reference('listener.exception')))
 ;
 $sc->register('framework', 'Chisimba\Framework')
-    ->setArguments(array($routes)); //, new Reference('dispatcher'), new Reference('resolver')))
+    ->setArguments(array($routes));
 ;
  
 return $sc;
