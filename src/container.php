@@ -27,7 +27,7 @@ $sc->register('dispatcher', 'Symfony\Component\EventDispatcher\EventDispatcher')
     ->addMethodCall('addSubscriber', array(new Reference('listener.exception')))
 ;
 $sc->register('framework', 'Chisimba\Framework')
-    ->setArguments(array($routes, new Reference('dispatcher'), new Reference('resolver')))
+    ->setArguments(array($routes)); //, new Reference('dispatcher'), new Reference('resolver')))
 ;
  
 return $sc;
