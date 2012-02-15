@@ -16,4 +16,9 @@
             <directory>./tests/Chisimba/</directory>
         </testsuite>
     </testsuites>
+    <logging>
+        <log type="coverage-html" target="_reports/coverage" charset="UTF-8" yui="true" highlight="true" />
+        <log type="testdox-text" target="_reports/testdox/executed.txt"/>
+    </logging>
+
 </phpunit>
