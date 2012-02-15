@@ -15,6 +15,9 @@
         <testsuite name="Chisimba Test Suite">
             <directory>./tests/Chisimba/</directory>
         </testsuite>
+        <testsuite name="Chisimba Modules Test Suite">
+            <directory>./src/Modules/*/tests/</directory>
+        </testsuite>
     </testsuites>
     <logging>
         <log type="coverage-html" target="_reports/coverage" charset="UTF-8" yui="true" highlight="true" />
