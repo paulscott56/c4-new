@@ -5,12 +5,13 @@
         "symfony/routing": "2.1.*",
         "symfony/http-kernel": "2.1.*",
         "symfony/event-dispatcher": "2.1.*",
-        "symfony/dependency-injection": "2.1.*"
+        "symfony/dependency-injection": "2.1.*",
+        "symfony/yaml": "2.1.*",
+        "doctrine/orm": "2.2.*" 
     },
     "autoload": {
         "psr-0": { "Chisimba": "src/", 
-                   "Modules": "src/",
-                   "Calendar": "src/" 
+                   "Modules": "src/"
                  }
     }
 }
