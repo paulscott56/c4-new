@@ -13,4 +13,8 @@ $routes->add('index', new Routing\Route('/', array(
     '_controller' => 'Chisimba\\Controller\\DefaultController::indexAction',
 )));
 
+$routes->add('modulecatalogue', new Routing\Route('/modulecatalogue/*', array(
+    '_controller' => 'Modules\\ModuleCatalogue\\DefaultController::indexAction',
+)));
+
 return $routes;

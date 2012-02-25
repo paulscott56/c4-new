@@ -64,10 +64,35 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     	$this->assertEquals(200, $response->getStatusCode());
     	$this->assertContains('Welcome to Chisimba 4!', $response->getContent());
     }
+    
+    public function testYamlWriter()
+    {
+    	$routes = include __DIR__.'/../../../src/app.php';
+    	$framework = new Framework($routes);
+    	$framework->yamlWriter(array('data' => array(1, 2, 3, 4, 5), 'second' => 'test String'), 'phpunit_test');
+    	$this->assertTrue(file_exists(__DIR__.'/../../../config/phpunit_test.yml'));
+    }
+    
+    public function testParseGeneralConfiguration()
+    {
+    	$routes = include __DIR__.'/../../../src/app.php';
+    	$framework = new Framework($routes);
+    	$this->assertEquals(array('data' => array(1, 2, 3, 4, 5), 'second' => 'test String'), 
+    	                    $framework->parseGeneralConfiguration('phpunit_test'));
+    }
+    
+    public function testParseMainConfiguration()
+    {
+    	$routes = include __DIR__.'/../../../src/app.php';
+    	$framework = new Framework($routes);
+    	$framework->parseMainConfiguration();
+    }
  
     protected function getFrameworkForException($exception)
     {
         $routes = include __DIR__.'/../../../src/app.php';
         return new Framework($routes);
     }
+    
+    
 }
