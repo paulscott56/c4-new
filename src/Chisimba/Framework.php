@@ -26,11 +26,13 @@ class Framework extends HttpKernel\HttpKernel
         $dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher));
         $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
         
-        // The YAML parser object can be re-used, so we instantiate it here
-        $this->yamlParser = new Parser();
-        
         // get the main configuration
         $this->parseMainConfiguration();
+        // set up the database connection
+        
+        // set up the templating system
+        
+        // Profit!!!1
         
         parent::__construct($dispatcher, $resolver);
     }
@@ -38,10 +40,14 @@ class Framework extends HttpKernel\HttpKernel
     public function parseMainConfiguration() 
     {
     	try {
+    		// The YAML parser object can be re-used, so we instantiate it here
+    		$this->yamlParser = new Parser();
     		$this->mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../config/systemConfig.yml'));
     	} catch (ParseException $e) {
     		printf("Unable to parse the YAML string: %s", $e->getMessage());
+    		die();
     	}
+    	return $this;
     }
     
     public function parseGeneralConfiguration($configFile) 
@@ -59,5 +65,10 @@ class Framework extends HttpKernel\HttpKernel
     	$dumper = new Dumper();
     	$yaml = $dumper->dump($data);
     	file_put_contents(__DIR__.'/../../config/'.$filename.'.yml', $yaml);
+    }
+    
+    public function getConfiguration() 
+    {
+    	return self::parseMainConfiguration();
     }
 }

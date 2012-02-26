@@ -81,11 +81,18 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     	                    $framework->parseGeneralConfiguration('phpunit_test'));
     }
     
-    public function testParseMainConfiguration()
+    public function testParseMainConfigurationException()
     {
     	$routes = include __DIR__.'/../../../src/app.php';
     	$framework = new Framework($routes);
     	$framework->parseMainConfiguration();
+    }
+    
+    public function testParseGeneralConfigurationException()
+    {
+    	$routes = include __DIR__.'/../../../src/app.php';
+    	$framework = new Framework($routes);
+    	$framework->parseGeneralConfiguration('phpunit_testException');
     }
  
     protected function getFrameworkForException($exception)
