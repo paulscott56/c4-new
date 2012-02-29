@@ -94,6 +94,22 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     	$framework = new Framework($routes);
     	$framework->parseGeneralConfiguration('phpunit_testException');
     }
+    
+    public function testSetPhpSettings()
+    {
+        $routes = include __DIR__.'/../../../src/app.php';
+    	$framework = new Framework($routes);
+    	$framework->setPhpSettings(array('max_execution_time' => 80));
+        $this->assertEquals(ini_get('max_execution_time'), 80);
+    }
+    
+    public function testSetIncludePath() 
+    {
+    	$routes = include __DIR__.'/../../../src/app.php';
+    	$framework = new Framework($routes);
+    	$framework->setIncludePaths(array('/var/www/', '/var/www/html'));
+    	$this->assertContains('/var/www/'.PATH_SEPARATOR.'/var/www/html', get_include_path());
+    }
  
     protected function getFrameworkForException($exception)
     {
