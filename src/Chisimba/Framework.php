@@ -71,4 +71,39 @@ class Framework extends HttpKernel\HttpKernel
     {
     	return self::parseMainConfiguration();
     }
+    
+    /**
+    * Set PHP configuration settings
+    *
+    * @param  array $settings
+    * @param  string $prefix Key prefix to prepend to array values (used to map . separated INI values)
+    * @return Framework
+    */
+    public function setPhpSettings(array $settings, $prefix = '')
+    {
+        foreach ($settings as $key => $value) {
+            $key = empty($prefix) ? $key : $prefix . $key;
+            if (is_scalar($value)) {
+                ini_set($key, $value);
+            } elseif (is_array($value)) {
+                $this->setPhpSettings($value, $key . '.');
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Set include path
+     *
+     * @param  array $paths
+     * @return Framework
+     */
+    public function setIncludePaths(array $paths)
+    {
+        $path = implode(PATH_SEPARATOR, $paths);
+        set_include_path($path . PATH_SEPARATOR . get_include_path());
+        return $this;
+    }
+    
 }
