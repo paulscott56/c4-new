@@ -76,17 +76,13 @@ class Framework extends HttpKernel\HttpKernel
     * Set PHP configuration settings
     *
     * @param  array $settings
-    * @param  string $prefix Key prefix to prepend to array values (used to map . separated INI values)
     * @return Framework
     */
-    public function setPhpSettings(array $settings, $prefix = '')
+    public function setPhpSettings(array $settings)
     {
         foreach ($settings as $key => $value) {
-            $key = empty($prefix) ? $key : $prefix . $key;
             if (is_scalar($value)) {
                 ini_set($key, $value);
-            } elseif (is_array($value)) {
-                $this->setPhpSettings($value, $key . '.');
             }
         }
     

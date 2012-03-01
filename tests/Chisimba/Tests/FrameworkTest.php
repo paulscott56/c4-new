@@ -79,6 +79,10 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     	$framework = new Framework($routes);
     	$this->assertEquals(array('data' => array(1, 2, 3, 4, 5), 'second' => 'test String'), 
     	                    $framework->parseGeneralConfiguration('phpunit_test'));
+    	
+    	// exception test
+    	$framework->yamlWriter(array('data' => array('monkey', '')), 'phpunitException.yml');
+    	$framework->parseGeneralConfiguration('phpunitException.yml');
     }
     
     public function testParseMainConfigurationException()
