@@ -2,6 +2,8 @@
  
 use Symfony\Component\DependencyInjection;
 use Symfony\Component\DependencyInjection\Reference;
+use Monolog\Logger;
+
 
 $routes = include __DIR__.'/app.php';
 
@@ -26,8 +28,22 @@ $sc->register('dispatcher', 'Symfony\Component\EventDispatcher\EventDispatcher')
     ->addMethodCall('addSubscriber', array(new Reference('listener.response')))
     ->addMethodCall('addSubscriber', array(new Reference('listener.exception')))
 ;
-$sc->register('framework', 'C4\Core\Framework')
-    ->setArguments(array($routes));
+
+
+// logging
+//$sc->register('log.writer','StreamHandler')
+//    ->addArgument(__DIR__.'/my_app.log')
+//    ->addArgument(Logger::DEBUG)
+//;
+
+//$sc->register('log.FirePHPwriter','FirePHPHandler')
+//;
+
+$sc->register('logger', '\Monolog\Logger')
+    ->addArgument(__DIR__.'/System_Log')
 ;
- 
+
+$sc->register('framework', 'C4\Core\Framework')
+->setArguments(array($routes, new Reference('logger')));
+;
 return $sc;

@@ -7,13 +7,13 @@
         "symfony/event-dispatcher": "dev-master",
         "symfony/dependency-injection": "dev-master",
         "symfony/yaml": "dev-master",
-        "doctrine/orm": "2.2.*" 
+        "doctrine/orm": "2.2.*",
+        "monolog/monolog": "dev-master" 
     },
     "autoload": {
         "psr-0": { 
-                   "C4": "src/"
-                   
-                  
+                   "C4": "src/",
+                   "Monolog": "src/"
                  }
     }
 }

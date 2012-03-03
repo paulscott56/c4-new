@@ -10,14 +10,23 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\FirePHPHandler;
+
 
 class Framework extends HttpKernel\HttpKernel
 {
 	public $mainConfiguration;
 	public $yamlParser;
+	private $logger;
 	
-    public function __construct($routes)
+    public function __construct($routes, $logger)
     {
+        $this->logger = $logger;
+        $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../logging/System_Log.log', \Monolog\Logger::DEBUG));
+        $this->logger->pushHandler(new FirePHPHandler());
+        $this->logger->addInfo('My logger is now ready');
+        
         $context = new Routing\RequestContext();
         $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
         $resolver = new HttpKernel\Controller\ControllerResolver();
@@ -25,6 +34,11 @@ class Framework extends HttpKernel\HttpKernel
         $dispatcher = new EventDispatcher();
         $dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher));
         $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
+        
+        $dispatcher->addSubscriber(new ExceptionListener(function (Request $request) {
+            $msg = 'Something went wrong! ('.$request->get('exception')->getMessage().')';
+            return new Response($msg, 500);
+        }));
         
         // get the main configuration
         $this->parseMainConfiguration();
@@ -40,6 +54,7 @@ class Framework extends HttpKernel\HttpKernel
     public function parseMainConfiguration() 
     {
     	try {
+    	    $this->logger->addInfo('Parsing main configs');
     		// The YAML parser object can be re-used, so we instantiate it here
     		$this->yamlParser = new Parser();
     		$this->mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/systemConfig.yml'));
