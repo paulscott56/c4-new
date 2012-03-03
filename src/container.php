@@ -19,14 +19,14 @@ $sc->register('listener.response', 'Symfony\Component\HttpKernel\EventListener\R
     ->setArguments(array('UTF-8'))
 ;
 $sc->register('listener.exception', 'Symfony\Component\HttpKernel\EventListener\ExceptionListener')
-    ->setArguments(array('Chisimba\\Controller\\ErrorController::exceptionAction'))
+    ->setArguments(array('C4\\Core\\Controller\\ErrorController::exceptionAction'))
 ;
 $sc->register('dispatcher', 'Symfony\Component\EventDispatcher\EventDispatcher')
     ->addMethodCall('addSubscriber', array(new Reference('listener.router')))
     ->addMethodCall('addSubscriber', array(new Reference('listener.response')))
     ->addMethodCall('addSubscriber', array(new Reference('listener.exception')))
 ;
-$sc->register('framework', 'Chisimba\Framework')
+$sc->register('framework', 'C4\Core\Framework')
     ->setArguments(array($routes));
 ;
  

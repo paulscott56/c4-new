@@ -12,11 +12,11 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="Chisimba Test Suite">
-            <directory>./tests/Chisimba/</directory>
+        <testsuite name="C4 Core Test Suite">
+            <directory>./tests/C4/</directory>
         </testsuite>
-        <testsuite name="Chisimba Modules Test Suite">
-            <directory>./src/Modules/*/tests/</directory>
+        <testsuite name="C4 Modules Test Suite">
+            <directory>./src/C4/Modules/*/tests/</directory>
         </testsuite>
     </testsuites>
     <logging>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Chisimba framework.
+ * This file is part of the C4 framework.
  *
  * @author Paul Scott <pscott209@gmail.com>
  *

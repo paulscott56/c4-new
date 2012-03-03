@@ -10,8 +10,10 @@
         "doctrine/orm": "2.2.*" 
     },
     "autoload": {
-        "psr-0": { "Chisimba": "src/", 
-                   "Modules": "src/"
+        "psr-0": { 
+                   "C4": "src/"
+                   
+                  
                  }
     }
 }

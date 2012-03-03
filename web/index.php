@@ -11,7 +11,7 @@ $sc = include __DIR__.'/../src/container.php';
  
 $request = Request::createFromGlobals();
  
-$sc->register('listener.string_response', 'Chisimba\StringResponseListener');
+$sc->register('listener.string_response', 'C4\StringResponseListener');
 $sc->getDefinition('dispatcher')->addMethodCall('addSubscriber', array(new Reference('listener.string_response')));
 
 $sc->register('listener.response', 'Symfony\Component\HttpKernel\EventListener\ResponseListener')
