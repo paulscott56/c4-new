@@ -54,7 +54,6 @@ class Framework extends HttpKernel\HttpKernel
     public function parseMainConfiguration() 
     {
     	try {
-    	    $this->logger->addInfo('Parsing main configs');
     		// The YAML parser object can be re-used, so we instantiate it here
     		$this->yamlParser = new Parser();
     		$this->mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/systemConfig.yml'));

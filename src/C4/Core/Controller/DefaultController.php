@@ -10,6 +10,7 @@ use C4\Core\Framework;
  
 class DefaultController
 {
+    public $logger;
     public function indexAction(Request $request)
     {
         $config = \C4\Core\Framework::getConfiguration();

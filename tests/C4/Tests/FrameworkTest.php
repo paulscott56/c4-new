@@ -9,14 +9,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\FirePHPHandler;
 
 class FrameworkTest extends \PHPUnit_Framework_TestCase
 {
+    protected $logger;
+    
     public function setUp()
     {
         parent::setUp();
         $routes = include __DIR__.'/../../../src/app.php';
         $sc = include __DIR__.'/../../../src/container.php';
+        
     }
 
     public function testNotFoundHandling()
@@ -43,7 +48,7 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     
     public function testControllerResponse()
     {
-        $routes = include __DIR__.'/../../../src/app.php';
+        
         //$matcher = $this->getMock('Symfony\Component\Routing\Matcher\UrlMatcherInterface');
     	//$matcher
     	//->expects($this->once())
@@ -57,7 +62,7 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     //	;
     	//$resolver = new ControllerResolver();
     
-    	$framework = new Framework($routes);
+    	$framework = $this->getFramework();
     
     	$response = $framework->handle(new Request());
     
@@ -67,16 +72,14 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     
     public function testYamlWriter()
     {
-    	$routes = include __DIR__.'/../../../src/app.php';
-    	$framework = new Framework($routes);
+    	$framework = $this->getFramework();
     	$framework->yamlWriter(array('data' => array(1, 2, 3, 4, 5), 'second' => 'test String'), 'phpunit_test');
     	$this->assertTrue(file_exists(__DIR__.'/../../../config/phpunit_test.yml'));
     }
     
     public function testParseGeneralConfiguration()
     {
-    	$routes = include __DIR__.'/../../../src/app.php';
-    	$framework = new Framework($routes);
+    	$framework = $this->getFramework();
     	$this->assertEquals(array('data' => array(1, 2, 3, 4, 5), 'second' => 'test String'), 
     	                    $framework->parseGeneralConfiguration('phpunit_test'));
     	
@@ -87,30 +90,26 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     
     public function testParseMainConfigurationException()
     {
-    	$routes = include __DIR__.'/../../../src/app.php';
-    	$framework = new Framework($routes);
+    	$framework = $this->getFramework();
     	$framework->parseMainConfiguration();
     }
     
     public function testParseGeneralConfigurationException()
     {
-    	$routes = include __DIR__.'/../../../src/app.php';
-    	$framework = new Framework($routes);
+    	$framework = $this->getFramework();
     	$framework->parseGeneralConfiguration('phpunit_testException');
     }
     
     public function testSetPhpSettings()
     {
-        $routes = include __DIR__.'/../../../src/app.php';
-    	$framework = new Framework($routes);
+        $framework = $this->getFramework();
     	$framework->setPhpSettings(array('max_execution_time' => 80));
         $this->assertEquals(ini_get('max_execution_time'), 80);
     }
     
     public function testSetIncludePath() 
     {
-    	$routes = include __DIR__.'/../../../src/app.php';
-    	$framework = new Framework($routes);
+    	$framework = $this->getFramework();
     	$framework->setIncludePaths(array('/var/www/', '/var/www/html'));
     	$this->assertContains('/var/www/'.PATH_SEPARATOR.'/var/www/html', get_include_path());
     }
@@ -118,7 +117,22 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     protected function getFrameworkForException($exception)
     {
         $routes = include __DIR__.'/../../../src/app.php';
-        return new Framework($routes);
+        $logger = new \Monolog\Logger(__DIR__.'/../../../logging/SystemPHPUnit_Log.log');
+        $this->logger = $logger;
+        $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../logging/SystemPHPUnit_Log.log', \Monolog\Logger::DEBUG));
+        $this->logger->pushHandler(new FirePHPHandler());
+        return new Framework($routes, $this->logger);
+    }
+    
+    protected function getFramework()
+    {
+        $routes = include __DIR__.'/../../../src/app.php';
+        $logger = new \Monolog\Logger(__DIR__.'/../../../logging/SystemPHPUnit_Log.log');
+        $this->logger = $logger;
+        $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../logging/SystemPHPUnit_Log.log', \Monolog\Logger::DEBUG));
+        $this->logger->pushHandler(new FirePHPHandler());
+        $framework = new Framework($routes, $this->logger);
+        return $framework;
     }
     
     
