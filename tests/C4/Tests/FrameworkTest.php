@@ -1,7 +1,7 @@
 <?php
  
 // tests/C4/Tests/FrameworkTest.php
- 
+// some stuff 
 namespace C4\Tests;
  
 use C4\Core\Framework;
