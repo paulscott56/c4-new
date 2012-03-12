@@ -16,7 +16,7 @@ use Monolog\Handler\FirePHPHandler;
 
 class Framework extends HttpKernel\HttpKernel
 {
-	public $mainConfiguration;
+	public static $mainConfiguration;
 	public $yamlParser;
 	private $logger;
 	
@@ -56,7 +56,7 @@ class Framework extends HttpKernel\HttpKernel
     	try {
     		// The YAML parser object can be re-used, so we instantiate it here
     		$this->yamlParser = new Parser();
-    		$this->mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/systemConfig.yml'));
+    		self::$mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/systemConfig.yml'));
     	} catch (ParseException $e) {
     		printf("Unable to parse the YAML string: %s", $e->getMessage());
     		die();
@@ -81,9 +81,9 @@ class Framework extends HttpKernel\HttpKernel
     	file_put_contents(__DIR__.'/../../../config/'.$filename.'.yml', $yaml);
     }
     
-    public function getConfiguration() 
+    public static function getConfiguration() 
     {
-    	return self::parseMainConfiguration();
+    	return self::$mainConfiguration;
     }
     
     /**
