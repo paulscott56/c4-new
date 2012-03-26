@@ -13,7 +13,7 @@ class DefaultController
     public $logger;
     public function indexAction(Request $request)
     {
-        $config = \C4\Core\Framework::getConfiguration();
+        $config = Framework::getConfiguration();
     	$response = new Response('Welcome to C4!');
     	
         //$response->setTtl(10);

@@ -29,5 +29,4 @@ $sc->setParameter('debug', true);
 // echo $sc->getParameter('debug');
 
 $response = $sc->get('framework')->handle($request);
- 
 $response->send();
