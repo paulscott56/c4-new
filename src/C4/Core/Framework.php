@@ -1,7 +1,4 @@
 <?php
-
-// src/C4/Framework.php
-
 namespace C4\Core;
 
 use Symfony\Component\Routing;
@@ -25,19 +22,19 @@ require_once 'Doctrine/Common/ClassLoader.php';
 
 class Framework extends HttpKernel\HttpKernel
 {
-	public static $mainConfiguration;
-	public $yamlParser;
-	private $logger;
-	public $entityManager;
-	public $dm; 
-	
+    public static $mainConfiguration;
+    public $yamlParser;
+    private $logger;
+    public $entityManager;
+    public $documentManager;
+
     public function __construct($routes, $logger)
     {
         $this->logger = $logger;
         $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../logging/System_Log.log', \Monolog\Logger::DEBUG));
         $this->logger->pushHandler(new FirePHPHandler());
         $this->logger->addInfo('My logger is now ready');
-        
+
         $context = new Routing\RequestContext();
         $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
         $resolver = new HttpKernel\Controller\ControllerResolver();
@@ -45,67 +42,69 @@ class Framework extends HttpKernel\HttpKernel
         $dispatcher = new EventDispatcher();
         $dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher));
         $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
-        
-        $dispatcher->addSubscriber(new ExceptionListener(function (Request $request) {
+
+        $dispatcher->addSubscriber(new ExceptionListener(function (Request $request)
+        {
             $msg = 'Something went wrong! ('.$request->get('exception')->getMessage().')';
             return new Response($msg, 500);
-        }));
-        
+        }
+        ));
+
         // get the main configuration
         $this->parseMainConfiguration();
-        
+
         // get ORM
         $this->getORM();
-        // mongo ODM
-        // $this->getMongoODM();
         // set up the templating system
-        
+
         // Profit!!!1
-        
+
         parent::__construct($dispatcher, $resolver);
     }
-    
-    public function parseMainConfiguration() 
+
+    public function parseMainConfiguration()
     {
-    	try {
-    		// The YAML parser object can be re-used, so we instantiate it here
-    		$this->yamlParser = new Parser();
-    		self::$mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/systemConfig.yml'));
-    	} catch (ParseException $e) {
-    		printf("Unable to parse the YAML string: %s", $e->getMessage());
-    		die();
-    	}
-    	return $this;
+        try {
+            // The YAML parser object can be re-used, so we instantiate it here
+            $this->yamlParser = new Parser();
+            self::$mainConfiguration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/systemConfig.yml'));
+        } catch (ParseException $e) {
+            printf("Unable to parse the YAML string: %s", $e->getMessage());
+            die();
+        }
+        return $this;
     }
-    
-    public function parseGeneralConfiguration($configFile) 
+
+    public function parseGeneralConfiguration($configFile)
     {
-    	try {
-    		$configuration = $this->yamlParser->parse(file_get_contents(__DIR__.'/../../../config/'.$configFile.'.yml'));
-    		return $configuration;
-    	} catch (ParseException $e) {
-    		printf("Unable to parse the YAML string: %s", $e->getMessage());
-    	}
+        try {
+            $configuration = $this->yamlParser->parse(
+                file_get_contents(__DIR__.'/../../../config/'.$configFile.'.yml')
+            );
+            return $configuration;
+        } catch (ParseException $e) {
+            printf("Unable to parse the YAML string: %s", $e->getMessage());
+        }
     }
-    
-    public function yamlWriter(array $data, $filename) 
+
+    public function yamlWriter(array $data, $filename)
     {
-    	$dumper = new Dumper();
-    	$yaml = $dumper->dump($data);
-    	file_put_contents(__DIR__.'/../../../config/'.$filename.'.yml', $yaml);
+        $dumper = new Dumper();
+        $yaml = $dumper->dump($data);
+        file_put_contents(__DIR__.'/../../../config/'.$filename.'.yml', $yaml);
     }
-    
-    public static function getConfiguration() 
+
+    public static function getConfiguration()
     {
-    	return self::$mainConfiguration;
+        return self::$mainConfiguration;
     }
-    
+
     /**
-    * Set PHP configuration settings
-    *
-    * @param  array $settings
-    * @return Framework
-    */
+     * Set PHP configuration settings
+     *
+     * @param  array $settings
+     * @return Framework
+     */
     public function setPhpSettings(array $settings)
     {
         foreach ($settings as $key => $value) {
@@ -113,10 +112,10 @@ class Framework extends HttpKernel\HttpKernel
                 ini_set($key, $value);
             }
         }
-    
+
         return $this;
     }
-    
+
     /**
      * Set include path
      *
@@ -129,33 +128,33 @@ class Framework extends HttpKernel\HttpKernel
         set_include_path($path . PATH_SEPARATOR . get_include_path());
         return $this;
     }
-    
+
     public function getSession()
     {
-        
+
     }
-    
+
     public function setSession()
     {
-        
+
     }
-    
+
     /**
-    * Method to return an application URI. All URIs pointing at the application
-    * must be generated by this method. It is recommended that an action parameter
-    * is used to indicate the action being performed.
-    * The $mode parameter allows the use of a push/pop mechanism for storing
-    * user context for return later. **This needs more work, both implementation
-    * and documentation **
-    *
-    * @access  public
-    * @param   array  $params         Associative array of parameter values
-    * @param   string $module         Name of module to point to (blank for core actions)
-    * @param   string $mode           The URI mode to use, must be one of 'push', 'pop', or 'preserve'
-    * @param   string $omitServerName flag to produce relative URLs
-    * @param   bool   $javascriptCompatibility flag to produce javascript compatible URLs
-    * @returns string $uri the URL
-    */
+     * Method to return an application URI. All URIs pointing at the application
+     * must be generated by this method. It is recommended that an action parameter
+     * is used to indicate the action being performed.
+     * The $mode parameter allows the use of a push/pop mechanism for storing
+     * user context for return later. **This needs more work, both implementation
+     * and documentation **
+     *
+     * @access  public
+     * @param   array  $params         Associative array of parameter values
+     * @param   string $module         Name of module to point to (blank for core actions)
+     * @param   string $mode           The URI mode to use, must be one of 'push', 'pop', or 'preserve'
+     * @param   string $omitServerName flag to produce relative URLs
+     * @param   bool   $javascriptCompatibility flag to produce javascript compatible URLs
+     * @returns string $uri the URL
+     */
     public function uri(array $params = array(), $module = '', $mode = '', $omitServerName = FALSE, $javascriptCompatibility = FALSE, $Strict = FALSE, $https = FALSE) {
         if (! empty ( $action )) {
             $params ['action'] = $action;
@@ -201,7 +200,7 @@ class Framework extends HttpKernel\HttpKernel
         $params = array_reverse ( $params, TRUE );
         if (! empty ( $params )) {
             $output = array ();
-    
+
             foreach ( $params as $key => $item ) {
                 if (! is_null ( $item )) {
                     $output [] = urlencode ( $key ) . "=" . urlencode ( $item );
@@ -211,46 +210,48 @@ class Framework extends HttpKernel\HttpKernel
         }
         return $uri;
     }
-    
+
     private function getMongoODM()
     {
         // ODM Classes
         $classLoader = new ClassLoader('Doctrine\ODM\MongoDB', 'lib/vendor/doctrine-mongodb-odm/lib');
         $classLoader->register();
-        
+
         // Common Classes
-        $classLoader = new ClassLoader('Doctrine\Common', 'lib/vendor/doctrine-mongodb-odm/lib/vendor/doctrine-common/lib');
+        $classLoader = new ClassLoader('Doctrine\Common',
+                                       'lib/vendor/doctrine-mongodb-odm/lib/vendor/doctrine-common/lib');
         $classLoader->register();
-        
+
         // MongoDB Classes
-        $classLoader = new ClassLoader('Doctrine\MongoDB', 'lib/vendor/doctrine-mongodb-odm/lib/vendor/doctrine-mongodb/lib');
+        $classLoader = new ClassLoader('Doctrine\MongoDB',
+                                       'lib/vendor/doctrine-mongodb-odm/lib/vendor/doctrine-mongodb/lib');
         $classLoader->register();
-        
+
         // Document classes
         $classLoader = new ClassLoader('Documents', __DIR__);
         $classLoader->register();
-        
+
         $config = new Configuration();
         $config->setProxyDir(__DIR__ . '/cache');
         $config->setProxyNamespace('Proxies');
-        
+
         $config->setHydratorDir(__DIR__ . '/cache');
         $config->setHydratorNamespace('Hydrators');
-        
+
         $reader = new AnnotationReader();
         $reader->setDefaultAnnotationNamespace('Doctrine\ODM\MongoDB\Mapping\\');
         $config->setMetadataDriverImpl(new AnnotationDriver($reader, __DIR__ . '/Documents'));
-        
-        $this->dm = DocumentManager::create(new Connection(), $config);
+
+        $this->documentManager = DocumentManager::create(new Connection(), $config);
         return $this;
     }
-    
+
     private function getORM()
     {
         // set up the database connection
         $loader = new \Doctrine\Common\ClassLoader("Doctrine");
         $loader->register();
-        
+
         $dbParams = array(
                     'driver' => 'pdo_mysql',
                     'user' => 'root',
@@ -260,7 +261,7 @@ class Framework extends HttpKernel\HttpKernel
         $path = array(__DIR__ . '/entities');
         $config = Setup::createAnnotationMetadataConfiguration($path, true);
         $this->entityManager = EntityManager::create($dbParams, $config);
-        
+
         return $this;
     }
 }
