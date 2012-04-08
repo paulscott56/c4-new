@@ -18,8 +18,6 @@ use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 
-require_once 'Doctrine/Common/ClassLoader.php';
-
 class Framework extends HttpKernel\HttpKernel
 {
     public static $mainConfiguration;
