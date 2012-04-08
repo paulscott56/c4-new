@@ -9,6 +9,7 @@
         "symfony/dependency-injection": "dev-master",
         "symfony/yaml": "dev-master",
         "doctrine/orm": "2.2.*",
+        "doctrine/mongodb-odm": "dev-master",
         "monolog/monolog": "dev-master",
         "kriswallsmith/buzz": "dev-master" 
     },
