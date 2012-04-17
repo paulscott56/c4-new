@@ -3,6 +3,8 @@ namespace C4\Core;
 
 use Symfony\Component\Routing;
 use Symfony\Component\HttpKernel;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
@@ -57,8 +59,21 @@ class Framework extends HttpKernel\HttpKernel
         // set up the templating system
 
         // Profit!!!1
-
+        
+        // test user
+        $user = new Model\User();
+        $user->setUsername('Paul');
+        $user->setPassword('test');
+        
+        // persist
+        $this->documentManager->persist($user);
+        
+        $this->documentManager->flush();
+        
+        $users = $this->documentManager->getRepository('C4\Core\Model\User')->findOneBy(array('password' => 'test'));
+        //var_dump($users); die();
         parent::__construct($dispatcher, $resolver);
+        //var_dump($request);
     }
 
     public function parseMainConfiguration()
@@ -141,36 +156,24 @@ class Framework extends HttpKernel\HttpKernel
     
     private function getMongoODM()
     {
-        // ODM Classes
-        $classLoader = new ClassLoader('Doctrine\ODM\MongoDB', '/vendor/doctrine-mongodb-odm/lib');
-        $classLoader->register();
-
-        // Common Classes
-        $classLoader = new ClassLoader('Doctrine\Common',
-                                       '/vendor/doctrine-mongodb-odm/lib/vendor/doctrine-common/lib');
-        $classLoader->register();
-
-        // MongoDB Classes
-        $classLoader = new ClassLoader('Doctrine\MongoDB',
-                                       '/vendor/doctrine-mongodb-odm/lib/vendor/doctrine-mongodb/lib');
-        $classLoader->register();
-
-        // Document classes
-        $classLoader = new ClassLoader('Documents', __DIR__);
-        $classLoader->register();
-
-        $config = new Configuration();
-        $config->setProxyDir(__DIR__ . '/cache');
-        $config->setProxyNamespace('Proxies');
-
-        $config->setHydratorDir(__DIR__ . '/cache');
-        $config->setHydratorNamespace('Hydrators');
-
-        $reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
-        //$reader->setDefaultAnnotationNamespace('Doctrine\ODM\MongoDB\Mapping\\');
-        //$config->setMetadataDriverImpl(new AnnotationDriver($reader, __DIR__ . '/Documents'));
-
-        $this->documentManager = DocumentManager::create(new Connection(), $config);
+    	$config = new \Doctrine\ODM\MongoDB\Configuration();
+    	$config->setProxyDir('/var/www/c4/cache');
+    	$config->setProxyNamespace('Proxies');
+    	
+    	$config->setHydratorDir('/var/www/c4/cache');
+    	$config->setHydratorNamespace('Hydrators');
+    	
+    	
+    	
+    	$reader = new \Doctrine\Common\Annotations\AnnotationReader();
+    	$config->setMetadataDriverImpl(new AnnotationDriver($reader, __DIR__ . '/Documents'));
+    	AnnotationDriver::registerAnnotationClasses();
+    	//$reader->setDefaultAnnotationNamespace('Doctrine\ODM\MongoDB\Mapping\Annotations\\');
+    	//var_dump($reader);
+    	
+    	$dm = \Doctrine\ODM\MongoDB\DocumentManager::create(new Connection(), $config);
+    	
+        $this->documentManager = $dm;
         return $this;
     }
 
