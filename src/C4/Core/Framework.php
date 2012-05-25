@@ -65,18 +65,16 @@ class Framework extends HttpKernel\HttpKernel
             $this->getMongoODM();
             // set up the templating system
 
-            // Profit!!!1
-            
             // wrap up the JS
             $this->js = new AssetCollection(array(
                 new FileAsset(__DIR__.'/../../../assets/js/bootstrap.js'),
-                //new FileAsset(__DIR__.'/application.js'),
+                //new FileAsset(__DIR__.'/../../../assets/css/bootstrap.css'),
             ), array(
                    new YuiCompressorFilter(__DIR__.'/../../../assets/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar'),
             ));
 
             //header('Content-Type: application/js');
-            //echo $this->js->dump();
+            //echo '<script type="text/javascript">'.$this->js->dump().'</script>';
             
             
         }
