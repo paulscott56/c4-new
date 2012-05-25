@@ -19,6 +19,12 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Assetic\Asset\AssetCollection;
+use Assetic\Asset\FileAsset;
+use Assetic\Filter\Yui\JsCompressorFilter as YuiCompressorFilter;
+
+    
+
 
 class Framework extends HttpKernel\HttpKernel
 {
@@ -30,50 +36,56 @@ class Framework extends HttpKernel\HttpKernel
 
     public function __construct($routes, $logger)
     {
-        $this->logger = $logger;
+    	// get the main configuration
+    	$this->parseMainConfiguration();
+    	
+    	$this->logger = $logger;
         $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../logging/System_Log.log', \Monolog\Logger::DEBUG));
         $this->logger->pushHandler(new FirePHPHandler());
         $this->logger->addInfo('My logger is now ready');
 
-        $context = new Routing\RequestContext();
-        $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
-        $resolver = new HttpKernel\Controller\ControllerResolver();
+        try {
+            $context = new Routing\RequestContext();
+            $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
+            $resolver = new HttpKernel\Controller\ControllerResolver();
 
-        $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher));
-        $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
+            $dispatcher = new EventDispatcher();
+            $dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher));
+            $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
 
-        $dispatcher->addSubscriber(new ExceptionListener(function (Request $request)
-        {
-            $msg = 'Something went wrong! ('.$request->get('exception')->getMessage().')';
-            return new Response($msg, 500);
+            $dispatcher->addSubscriber(new ExceptionListener(function (Request $request)
+                {
+                    $msg = 'Something went wrong! ('.$request->get('exception')->getMessage().')';
+                    return new Response($msg, 500);
+                }
+            ));
+
+            // get ORM
+            $this->getORM();
+            $this->getMongoODM();
+            // set up the templating system
+
+            // Profit!!!1
+            
+            // wrap up the JS
+            $this->js = new AssetCollection(array(
+                new FileAsset(__DIR__.'/../../../assets/js/bootstrap.js'),
+                //new FileAsset(__DIR__.'/application.js'),
+            ), array(
+                   new YuiCompressorFilter(__DIR__.'/../../../assets/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar'),
+            ));
+
+            //header('Content-Type: application/js');
+            //echo $this->js->dump();
+            
+            
         }
-        ));
-
-        // get the main configuration
-        $this->parseMainConfiguration();
-
-        // get ORM
-        $this->getORM();
-        $this->getMongoODM();
-        // set up the templating system
-
-        // Profit!!!1
+        catch(Exception $e)
+        {
+        	echo "oops";
+        }
         
-        // test user
-        $user = new Model\User();
-        $user->setUsername('Paul');
-        $user->setPassword('test');
-        
-        // persist
-        $this->documentManager->persist($user);
-        
-        $this->documentManager->flush();
-        
-        $users = $this->documentManager->getRepository('C4\Core\Model\User')->findOneBy(array('password' => 'test'));
-        //var_dump($users); die();
         parent::__construct($dispatcher, $resolver);
-        //var_dump($request);
     }
 
     public function parseMainConfiguration()
@@ -143,16 +155,6 @@ class Framework extends HttpKernel\HttpKernel
         return $this;
     }
 
-    public function getSession()
-    {
-
-    }
-
-    public function setSession()
-    {
-
-    }
-
     
     private function getMongoODM()
     {
@@ -195,4 +197,42 @@ class Framework extends HttpKernel\HttpKernel
 
         return $this;
     }
+    
+    /**
+     * Grabs the client IP address
+     *
+     * This function should be used to grab IP addresses, even those behind proxies, to gather data from
+     *
+     * @return string $ip
+     */
+    private function getIpAddr() {
+    	if(!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    		$ip = $_SERVER['HTTP_CLIENT_IP'];
+    	}
+    	elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    		// pass from proxy
+    		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    	}
+    	else {
+    		$ip = $_SERVER['REMOTE_ADDR'];
+    	}
+    	return $ip;
+    }
+    
+    public function logVisitor()
+    {
+    	// test user
+    	$hitCount = new Model\VisitCounter();
+    	$hitCount->setIp($this->getIpAddr());
+    	$hitCount->setCounter(1);
+    	$hitCount->setHostname();
+    	$hitCount->incrementCounter();
+    	
+    	// persist
+    	$this->documentManager->persist($hitCount);
+    	$this->documentManager->flush();
+    	
+    	return true;
+    }
+    
 }

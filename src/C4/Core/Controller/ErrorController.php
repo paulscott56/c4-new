@@ -14,5 +14,7 @@ class ErrorController
         $msg = 'Something went wrong! ('.$exception->getMessage().')';
  
         return new Response($msg, $exception->getStatusCode());
+        
+        die();
     }
 }

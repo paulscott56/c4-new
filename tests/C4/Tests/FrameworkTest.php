@@ -113,6 +113,13 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     	$framework->setIncludePaths(array('/var/www/', '/var/www/html'));
     	$this->assertContains('/var/www/'.PATH_SEPARATOR.'/var/www/html', get_include_path());
     }
+    
+    public function testLogVisitor()
+    {
+    	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+    	$framework = $this->getFramework();
+    	$this->assertTrue($framework->logVisitor());
+    }
  
     protected function getFrameworkForException($exception)
     {

@@ -11,13 +11,15 @@
         "doctrine/orm": "2.2.*",
         "doctrine/mongodb-odm": "dev-master",
         "monolog/monolog": "dev-master",
-        "kriswallsmith/buzz": "dev-master" 
+        "kriswallsmith/buzz": "dev-master",
+        "kriswallsmith/assetic": "dev-master" 
     },
     "autoload": {
         "psr-0": { 
                    "C4": "src/",
                    "Monolog": "src/",
-                   "Buzz": "lib/"
+                   "Buzz": "lib/",
+                   "Assetic": "lib/"
                  }
     }
 }
