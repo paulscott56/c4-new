@@ -4,28 +4,29 @@ namespace C4\Core\View;
 class BaseLayout 
 {
 	
-	public $pageHeader;
+	private $pageHeader;
 	
-	public $documentBodyTop;
+	private $documentBodyTop;
 	
-	public $documentBodyBottom;
+	private $documentBodyBottom;
 	
-	public $pageFooter;
+	private $pageFooter;
 	
-	public $pageEnd;
+	private $pageEnd;
 	
-	public $HTMLdocument;
+	private $HTMLdocument;
 	
-	public $pageLanguage = 'en';
+	private $pageLanguage = 'en';
 	
-	public $pageCharset = 'utf-8';
+	private $pageCharset = 'utf-8';
 	
-	public $pageTitle;
+	private $pageTitle = 'C4';
 	
 	private $metaContentDescription = '';
 	private $metaContentAuthor = 'C4 team';
 	private $siteName = 'C4';
 	private $footerString = '&copy; C4 2012';
+	private $pageContent = '';
 	
 	public function __construct()
 	{
@@ -72,7 +73,6 @@ class BaseLayout
                                                   <a class="brand" href="#">'.$this->siteName.'</a>
                                                       <div class="nav-collapse">
                                                           <ul class="nav">
-
                                                               <li class="active"><a href="#">Home</a></li>
                                                               <li><a href="#about">About</a></li>
                                                               <li><a href="#contact">Contact</a></li>
@@ -85,7 +85,7 @@ class BaseLayout
                                       <div class="container">';
 		
 		
-		$this->documentBodyBottom = '</div> <!-- /container -->';
+		$this->documentBodyBottom = $this->pageContent.'</div><!-- /container -->';
 		$this->pageFooter = '<footer>
                                  <p>'.$this->footerString.'</p>
                              </footer>';
@@ -115,8 +115,9 @@ class BaseLayout
 		$this->HTMLdocument = $this->pageHeader.$this->documentBodyTop.$this->documentBodyBottom.$this->pageFooter.$this->pageEnd;
 		return $this->HTMLdocument; 
 	}
-	public function renderView()
+	
+	public function setPageContent($content) 
 	{
-		echo "<html><head><title>C4</title></head><body>";
+		$this->pageContent .= $content;
 	}
 }
