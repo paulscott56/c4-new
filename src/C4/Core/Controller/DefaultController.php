@@ -14,7 +14,7 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
     	$config = Framework::getConfiguration();
-    	$response = new Response('Welcome to C4!', 200, array('content-type' => 'text/html'));
+    	$response = new Response($this->renderPage(), 200, array('content-type' => 'text/html'));
     	$response->headers->setCookie(new Cookie('C4', 'test'));
     	$response->setCache(array(
             'etag'          => 'c4',
@@ -30,7 +30,6 @@ class DefaultController extends Controller
         
      
     	//var_dump($request->cookies);
-    	$content = $this->renderView('test.html');
         return $response;
     }
 }

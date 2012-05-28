@@ -1,10 +1,14 @@
 <?php
 namespace C4\Core;
+use C4\Core\View\BaseLayout;
+
+use C4\Core\View;
 
 class Controller 
 {
-	public function renderView()
+	public function renderPage()
 	{
-		echo "<html><head><title>C4</title></head><body>";
+		$baseLayout = new BaseLayout();
+		return $baseLayout->documentFactory();
 	}
 }
