@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-if (file_exists($file = __DIR__.'/../vendor/.composer/autoload.php')) {
+if (file_exists($file = __DIR__.'/../vendor/autoload.php')) {
     require_once $file;
-} elseif (file_exists($file = __DIR__.'/../vendor/.composer/autoload.php.dist')) {
+} elseif (file_exists($file = __DIR__.'/../vendor/autoload.php.dist')) {
     require_once $file;
 }
 

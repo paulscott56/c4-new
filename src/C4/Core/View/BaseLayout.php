@@ -14,7 +14,7 @@ class BaseLayout
 	
 	private $pageEnd;
 	
-	private $HTMLdocument;
+	private $HTMLdocument = null;
 	
 	private $pageLanguage = 'en';
 	
@@ -28,7 +28,7 @@ class BaseLayout
 	private $footerString = '&copy; C4 2012';
 	private $pageContent = '';
 	
-	public function __construct()
+	public function documentFactory()
 	{
 		// populate defaults
 		$this->pageHeader = '<!DOCTYPE html>
@@ -62,33 +62,70 @@ class BaseLayout
 		
 		$this->documentBodyTop = '<body>
                                       <div class="navbar navbar-fixed-top">
-                                          <div class="navbar-inner">
-                                              <div class="container">
-
-                                                  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                                                      <span class="icon-bar"></span>
-                                                      <span class="icon-bar"></span>
-                                                      <span class="icon-bar"></span>
-                                                  </a>
-                                                  <a class="brand" href="#">'.$this->siteName.'</a>
-                                                      <div class="nav-collapse">
-                                                          <ul class="nav">
-                                                              <li class="active"><a href="#">Home</a></li>
-                                                              <li><a href="#about">About</a></li>
-                                                              <li><a href="#contact">Contact</a></li>
-                                                          </ul>
-                                                      </div><!--/.nav-collapse -->
-                                                  </div>
-                                              </div>
-
-                                          </div>
-                                      <div class="container">';
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">'.$this->siteName.'</a>
+          <div class="btn-group pull-right">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="icon-user"></i> Username
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Profile</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Sign Out</a></li>
+            </ul>
+          </div>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Sidebar</li>
+              <li class="active"><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li class="nav-header">Sidebar</li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li class="nav-header">Sidebar</li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+                                      ';
 		
 		
-		$this->documentBodyBottom = $this->pageContent.'</div><!-- /container -->';
+		$this->documentBodyBottom = '<div class="container-fluid">'.$this->pageContent.'</div><!--/span-->
+          </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row--> <hr>';
 		$this->pageFooter = '<footer>
                                  <p>'.$this->footerString.'</p>
-                             </footer>';
+                             </footer>
+                         </div><!-- /container -->';
 		$this->pageEnd = '<!-- javascript ================================================== -->
                           <!-- Placed at the end of the document so the pages load faster -->
                           <!-- script src="../assets/js/bootstrap.js"></script -->
@@ -107,17 +144,18 @@ class BaseLayout
                           <script src="../assets/js/bootstrap-typeahead.js"></script>
                       </body>
                   </html>';
-		 
-	}
-	
-	public function documentFactory()
-	{
-		$this->HTMLdocument = $this->pageHeader.$this->documentBodyTop.$this->documentBodyBottom.$this->pageFooter.$this->pageEnd;
+		
+		$this->HTMLdocument .= $this->pageHeader;
+		$this->HTMLdocument .= $this->documentBodyTop;
+		$this->HTMLdocument .= $this->documentBodyBottom;
+		$this->HTMLdocument .= $this->pageFooter;
+		$this->HTMLdocument .= $this->pageEnd;
 		return $this->HTMLdocument; 
+		 
 	}
 	
 	public function setPageContent($content) 
 	{
-		$this->pageContent .= $content;
+		$this->pageContent = $content;
 	}
 }

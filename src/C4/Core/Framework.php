@@ -23,9 +23,6 @@ use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\Yui\JsCompressorFilter as YuiCompressorFilter;
 
-    
-
-
 class Framework extends HttpKernel\HttpKernel
 {
     public static $mainConfiguration;
@@ -63,8 +60,10 @@ class Framework extends HttpKernel\HttpKernel
             // get ORM
             $this->getORM();
             $this->getMongoODM();
-            // set up the templating system
-
+            
+            // log visitor
+            $this->logVisitor();
+            
             // wrap up the JS
             $this->js = new AssetCollection(array(
                 new FileAsset(__DIR__.'/../../../assets/js/bootstrap.js'),
@@ -232,5 +231,4 @@ class Framework extends HttpKernel\HttpKernel
     	
     	return true;
     }
-    
 }

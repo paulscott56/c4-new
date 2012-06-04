@@ -12,14 +12,16 @@
         "doctrine/mongodb-odm": "dev-master",
         "monolog/monolog": "dev-master",
         "kriswallsmith/buzz": "dev-master",
-        "kriswallsmith/assetic": "dev-master" 
+        "kriswallsmith/assetic": "dev-master",
+        "zendframework/zend-acl": "2.0.*" 
     },
     "autoload": {
         "psr-0": { 
                    "C4": "src/",
                    "Monolog": "src/",
                    "Buzz": "lib/",
-                   "Assetic": "lib/"
+                   "Assetic": "lib/",
+                   "Zend": "lib/"
                  }
     }
 }

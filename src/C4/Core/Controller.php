@@ -11,11 +11,6 @@ class Controller
 {
 	public $baseLayout;
 	
-	public function __construct()
-	{
-		
-	}
-	
 	public function setContent($content)
 	{
 		$this->baseLayout = new BaseLayout();
@@ -40,7 +35,7 @@ class Controller
             'public'        => true,
         ));
         $response->setCharset('UTF-8');
-        $response->setTtl(10);
+        //$response->setTtl(10);
     	return $response;
 	}
 }
