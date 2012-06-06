@@ -7,14 +7,14 @@ class AuthenticationService
 	/**
      * Persistent storage handler
      *
-     * @var Zend\Authentication\Storage\StorageInterface
+     * @var C4\Library\Authentication\Storage\StorageInterface
      */
     protected $storage = null;
 
     /**
      * Authentication adapter
      *
-     * @var Zend\Authentication\Adapter\AdapterInterface
+     * @var C4\Library\Authentication\Adapter\AdapterInterface
      */
     protected $adapter = null;
     
@@ -40,7 +40,7 @@ class AuthenticationService
      *
      * The adapter does not have a default if the storage adapter has not been set.
      *
-     * @return Zend\Authentication\Adapter\AdapterInterface|null
+     * @return C4\Library\Authentication\Adapter\AdapterInterface|null
      */
     public function getAdapter()
     {
@@ -50,8 +50,8 @@ class AuthenticationService
     /**
      * Sets the authentication adapter
      *
-     * @param  Zend\Authentication\Adapter\AdapterInterface $adapter
-     * @return Zend\Authentication\AuthenticationService Provides a fluent interface
+     * @param  C4\Library\Authentication\Adapter\AdapterInterface $adapter
+     * @return C4\Library\Authentication\AuthenticationService Provides a fluent interface
      */
     public function setAdapter(Adapter\AdapterInterface $adapter)
     {
@@ -64,7 +64,7 @@ class AuthenticationService
      *
      * Session storage is used by default unless a different storage adapter has been set.
      *
-     * @return Zend\Authentication\Storage\StorageInterface
+     * @return C4\Library\Authentication\Storage\StorageInterface
      */
     public function getStorage()
     {
@@ -78,8 +78,8 @@ class AuthenticationService
     /**
      * Sets the persistent storage handler
      *
-     * @param  Zend\Authentication\Storage\StorageInterface $storage
-     * @return Zend\Authentication\AuthenticationService Provides a fluent interface
+     * @param  C4\Library\Authentication\Storage\StorageInterface $storage
+     * @return C4\Library\Authentication\AuthenticationService Provides a fluent interface
      */
     public function setStorage(Storage\StorageInterface $storage)
     {
@@ -90,9 +90,9 @@ class AuthenticationService
     /**
      * Authenticates against the supplied adapter
      *
-     * @param  Zend\Authentication\Adapter\AdapterInterface $adapter
-     * @return Zend\Authentication\Result
-     * @throws Zend\Authentication\Exception\RuntimeException
+     * @param  C4\Library\Authentication\Adapter\AdapterInterface $adapter
+     * @return C4\Library\Authentication\Result
+     * @throws C4\Library\Authentication\Exception\RuntimeException
      */
     public function authenticate(Adapter\AdapterInterface $adapter = null)
     {
@@ -104,7 +104,7 @@ class AuthenticationService
         $result = $adapter->authenticate();
 
         /**
-         * ZF-7546 - prevent multiple succesive calls from storing inconsistent results
+         * Prevent multiple succesive calls from storing inconsistent results
          * Ensure storage has clean state
          */
         if ($this->hasIdentity()) {
