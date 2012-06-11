@@ -124,6 +124,7 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
  
     protected function getFrameworkForException($exception)
     {
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         $routes = include __DIR__.'/../../../src/app.php';
         $logger = new \Monolog\Logger(__DIR__.'/../../../logging/SystemPHPUnit_Log.log');
         $this->logger = $logger;
@@ -134,6 +135,7 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     
     protected function getFramework()
     {
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         $routes = include __DIR__.'/../../../src/app.php';
         $logger = new \Monolog\Logger(__DIR__.'/../../../logging/SystemPHPUnit_Log.log');
         $this->logger = $logger;
