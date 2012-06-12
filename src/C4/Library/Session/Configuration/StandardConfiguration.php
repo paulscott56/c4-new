@@ -9,7 +9,7 @@ use C4\Library\Session\Configuration\ConfigurationInterface as Configurable,
 class StandardConfiguration implements Configurable
 {
     /**
-     * @var Zend\Filter Filter to convert CamelCase to underscore_separated
+     * @var C4\Library\Filter Filter to convert CamelCase to underscore_separated
      */
     protected $camelCaseToUnderscoreFilter;
     
