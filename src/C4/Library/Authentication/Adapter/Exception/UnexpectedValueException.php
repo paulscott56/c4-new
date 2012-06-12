@@ -1,6 +1,6 @@
 <?php
 
-namespace Zend\Authentication\Adapter\Exception;
+namespace C4\Library\Authentication\Adapter\Exception;
 
 use C4\Library\Authentication\Exception;
 
