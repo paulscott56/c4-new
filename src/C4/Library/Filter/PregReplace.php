@@ -2,8 +2,8 @@
 
 namespace C4\Library\Filter;
 
-use Traversable,
-    C4\Library\Stdlib\ArrayUtils;
+use Traversable;
+    //C4\Library\Stdlib\ArrayUtils;
 
 class PregReplace extends AbstractFilter
 {
