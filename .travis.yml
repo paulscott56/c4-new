@@ -6,6 +6,7 @@ php:
 
 before_script:
   - php composer.phar install
+  - mongo c4
 
 script: phpunit --coverage-text
 
